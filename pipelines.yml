@@ -1,0 +1,31 @@
+pipelines:
+  - name: ExitTester
+    steps:
+      - name: FirstStep
+        type: Bash
+        execution:
+          onExecute:
+            - echo "step 1 is running"
+            - echo "Writing sample script"
+            - touch test.sh
+            - echo "#!/bin/bash" >> test.sh
+            - echo 'echo "This is test.sh running"' >> test.sh
+            - echo 'exit 1' >> test.sh
+            - chmod +x test.sh
+            - cat test.sh
+            - echo "Writing sample makefile"
+            - touch Makefile;
+            - echo "hellotest:" >> Makefile
+            - echo -e '\techo "Hi there"' >> Makefile
+            - echo -e '\t./test.sh' >> Makefile
+            - echo -e '\texit 0' >> Makefile
+            - cat -etv  Makefile
+            - echo "Running makefile"
+            - make hellotest
+            - echo "End of FirstStep"
+          onFailure:
+            - echo "FirstStep failed"
+          onSuccess:
+            - echo "FirstStep has succeeded"
+          onComplete:
+            - echo "FirstStep has completed"
